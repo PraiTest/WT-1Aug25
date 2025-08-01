@@ -1,0 +1,30 @@
+[<html>
+    <head>
+        <title>Age Calculator</title>
+        <script>
+            function age(){
+                var d=new Date();
+                var y=new Date(document.getElementById("b").value);
+                var ya=d.getFullYear()-y.getFullYear();
+                var ma=d.getMonth()-y.getMonth();
+                if(ma<0){
+                    ya--;
+                    ma+=12;
+                }
+                var da=d.getDate()-y.getDate();
+                if(da<0){
+                    ma--;
+                    da+= new Date(y.getFullYear(),y.getMonth(),0).getDate();
+                }
+                document.getElementById("t").innerHTML=
+                 ya+" Years "+ma+" months "+da+" days";
+            }
+        </script>
+    </head>
+    <body>
+        <input type="date" id="b" name="dob">
+        <br><br>
+        <button onclick="age()">Calculate</button>
+        <p id="t"></p>
+    </body>
+</html>]

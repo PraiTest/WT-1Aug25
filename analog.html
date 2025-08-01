@@ -1,0 +1,124 @@
+<!--Analog Watch which displays it self where mouse is pointing-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Analog Clock at Mouse</title>
+<style>
+  body, html {
+    margin: 0; padding: 0; overflow: hidden;
+    height: 100vh; width: 100vw;
+  }
+  canvas {
+    display: block;
+    background: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+<canvas id="clockCanvas"></canvas>
+
+<script>
+  const canvas = document.getElementById('clockCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Resize canvas to fill window
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let mouseX = canvas.width / 2;
+  let mouseY = canvas.height / 2;
+
+  // Draw analog clock at (x, y)
+  function drawClock(x, y, radius = 50) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.clearRect(-radius-10, -radius-10, radius*2+20, radius*2+20);
+
+    // Clock face
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+
+    // Draw hour marks
+    for (let i = 0; i < 12; i++) {
+      let angle = (i * Math.PI / 6);
+      ctx.beginPath();
+      ctx.lineWidth = 3;
+      ctx.moveTo(radius * 0.85 * Math.cos(angle), radius * 0.85 * Math.sin(angle));
+      ctx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+      ctx.stroke();
+    }
+
+    // Get current time
+    const now = new Date();
+    let hr = now.getHours() % 12;
+    let min = now.getMinutes();
+    let sec = now.getSeconds();
+
+    // Calculate angles
+    let secAngle = sec * Math.PI / 30;
+    let minAngle = (min + sec/60) * Math.PI / 30;
+    let hrAngle = (hr + min/60 + sec/3600) * Math.PI / 6;
+
+    // Draw hour hand
+    ctx.beginPath();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = '#000';
+    ctx.moveTo(0,0);
+    ctx.lineTo(radius * 0.5 * Math.cos(hrAngle - Math.PI/2), radius * 0.5 * Math.sin(hrAngle - Math.PI/2));
+    ctx.stroke();
+
+    // Draw minute hand
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#000';
+    ctx.moveTo(0,0);
+    ctx.lineTo(radius * 0.75 * Math.cos(minAngle - Math.PI/2), radius * 0.75 * Math.sin(minAngle - Math.PI/2));
+    ctx.stroke();
+
+    // Draw second hand
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'red';
+    ctx.moveTo(0,0);
+    ctx.lineTo(radius * 0.85 * Math.cos(secAngle - Math.PI/2), radius * 0.85 * Math.sin(secAngle - Math.PI/2));
+    ctx.stroke();
+
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // Clear whole canvas
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  window.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function loop() {
+    clearCanvas();
+    drawClock(mouseX, mouseY);
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+</script>
+</body>
+</html>

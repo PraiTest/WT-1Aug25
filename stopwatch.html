@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>StopWatch</title>
+</head>
+<body>
+    <div id="timer">0</div>
+    <button id="startButton">Start</button>
+    <button id="resetButton">Reset</button>
+
+    <script>
+        let timer = document.getElementById('timer');
+        let startButton = document.getElementById('startButton');
+        let resetButton = document.getElementById('resetButton');
+
+        let count = 0;
+        let interval;
+
+        startButton.onclick = function() {
+            interval = setInterval(() => {
+                count++;
+                timer.textContent = count;
+            }, 1000);
+        };
+
+        resetButton.onclick = function() {
+            clearInterval(interval);
+            count = 0;
+            timer.textContent = count;
+        };
+    </script>
+</body>
+</html>
